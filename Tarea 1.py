@@ -1,11 +1,11 @@
 import datetime
 
-# Definicion de la estructura de datos para el inventario
+#Definicion de la estructura de datos para el inventario
 class Inventory:
     def __init__(self):
         self.inventory = []
 
-# Funcion para añadir un nuevo articulo al inventario
+    #Funcion para añadir un nuevo articulo al inventario
     def add_item(self, name, quantity, price, type, size):
         item = {
             'name': name,
@@ -17,7 +17,7 @@ class Inventory:
         }
         self.inventory.append(item)
 
-    # Funcion para actualizar la cantidad de un articulo existente
+    #Funcion para actualizar la cantidad de un articulo
     def update_quantity(self, name, new_quantity):
         for item in self.inventory:
             if item['name'] == name:
@@ -25,7 +25,7 @@ class Inventory:
                 break
         print(f"Name: {item['name']}, Quantity: {item['quantity']}, Price: {item['price']}, Type: {item['type']}, Size: {item['size']}, Date: {item['date']}")
 
-    # Funcion para buscar articulos especificos en el inventario
+    #Funcion para buscar articulos especificos
     def search_items(self, criteria, value):
         if criteria == 'name':
             return filter(lambda item: item['name'] == value, self.inventory)
@@ -40,7 +40,7 @@ class Inventory:
         elif criteria == 'date':
             return filter(lambda item: item['date'] == value, self.inventory)
             
-    # Funcion para ordenar el inventario por nombre, cantidad o precio
+    #Funcion para ordenar el inventario por nombre, cantidad, precio, tipo, tamaño o fecha
     def sort_inventory(self, key):
         if key == 'name':
             return sorted(self.inventory, key=lambda item: item[key])
@@ -55,7 +55,15 @@ class Inventory:
         elif key == 'date':
             return sorted(self.inventory, key=lambda item: item[key])
 
-    # Funcion anidada para generar un informe de inventario
+    #Funcion para eliminar un articulo del inventario
+    def delete_item(self, name):
+        for item in self.inventory:
+            if item["name"] == name:
+                self.inventory.remove(item)
+                print(f"Item deleted: {item['name']}")
+                return
+            
+    #Funcion anidada para generar un informe de inventario y calcular valor total del inventario (cantidad * precio)
     def generate_inventory_report(self):
         def calculate_value(item):
             return item['quantity'] * item['price']
@@ -71,9 +79,10 @@ class Inventory:
             print("----------------")
         print(f"Total Value of Quantity * Price: {total_value}")
 
+#Inicializar la clase
 inventory = Inventory()
 
-# Ciclo principal
+#Menu principal
 while True:
     menu = """
         ======= MENU =========
@@ -81,8 +90,9 @@ while True:
         2. Update quantity from item
         3. Search item
         4. Sort inventory
-        5. Generate report of inventory
-        6. Salir
+        5. Delete item
+        6. Generate report of inventory
+        7. Exit
         -----------------------------
         Enter your choice: """
     option = int(input(menu))
@@ -150,8 +160,7 @@ while True:
         5. Size
         6. Date
         -------------------------
-        Enter your choice: 
-        """
+        Enter your choice: """
         option_sort = int(input(menu_sort))
         if option_sort == 1:
             inventory_sorted = inventory.sort_inventory('name')
@@ -185,8 +194,10 @@ while True:
             for item in inventory_sorted:
                 print(f"Date: {item['date']}")
     elif option == 5:
-        inventory.generate_inventory_report()
+        delete_item = inventory.delete_item(input('Enter the name of the item: '))
     elif option == 6:
+        inventory.generate_inventory_report()
+    elif option == 7:
         break
     else:
         print('Invalid option. Please try again. \n')
